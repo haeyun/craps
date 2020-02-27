@@ -46,7 +46,7 @@ x <- tibble(results = map_int(1:100000, ~ roll_two_dice()))
 
 # Once I have a tibble, the standard ggplot works. Would be nice to have the
 # x-axis labels corresponding to the actual roll values, like 2, 3 and so on.
-# Need tyo figure out a way to get the stats_bin warning (or is it a message?)
+# Need to figure out a way to get the stats_bin warning (or is it a message?)
 # to disappear. If I just turn it off in the code chunk, I will be penalized.
 
 x %>% 
@@ -65,6 +65,19 @@ x %>%
 # Assume that John Mark is honest. Yeah! How surprising is it to roll 6 winners?
 # How unusual is it to win against Ishan 4 to 0?
 
+contest_size <- 6
+number_of_contests <- 2
+n <- contest_size * number_of_contests
 
+x <- tibble(p_IB = map_int(1:6, ~ roll_two_dice()), 
+                  p_JM = map_int(1:6, ~ roll_two_dice())) %>%
+  mutate(IB_craps = p_IB %in% c(7,11)) %>%
+  mutate(JM_craps = p_JM %in% c(7,11)) %>%
+  # mutate(winner = ifelse(IB_craps == TRUE & JM_craps == FALSE, "IB", "Tie"),
+  #        winner = ifelse(JM_craps == TRUE & IB_craps == FALSE, "JM", "Tie"))
+  mutate(winner = "Tie") %>%
+  mutate(winner = ifelse(IB_craps & !JM_craps, "IB", winner),
+         winner = ifelse(JM_craps & !IB_craps, "JM", winner))
+  
 ```
 
